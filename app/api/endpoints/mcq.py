@@ -1,24 +1,55 @@
-from fastapi import APIRouter
-import random
+kfrom fastapi import APIRouter
 
 router = APIRouter()
 
-@router.get("/mcq")
-def generate_mcq(topic: str):
-    questions = [
+# =========================
+# SAMPLE MCQ DATABASE (TEMP)
+# =========================
+QUESTIONS_DB = {
+    "physics": [
         {
-            "question": f"What is the basic concept of {topic}?",
-            "options": ["Option A", "Option B", "Option C", "Option D"],
-            "answer": "Option A"
+            "question": "What is Newton's First Law?",
+            "options": [
+                "Law of inertia",
+                "F = ma",
+                "E = mc2",
+                "Gravity law"
+            ],
+            "answer": "Law of inertia"
         },
         {
-            "question": f"Which is related to {topic}?",
-            "options": ["X", "Y", "Z", "W"],
-            "answer": "Y"
+            "question": "Unit of Force?",
+            "options": ["Newton", "Joule", "Watt", "Pascal"],
+            "answer": "Newton"
         }
     ]
+}
 
+# =========================
+# GET QUESTIONS
+# =========================
+@router.get("/mcq")
+def get_mcq(topic: str):
     return {
         "topic": topic,
-        "questions": questions
+        "questions": QUESTIONS_DB.get(topic.lower(), [])
+    }
+
+# =========================
+# CHECK ANSWERS
+# =========================
+@router.post("/submit")
+def submit_answers(payload: dict):
+    questions = payload.get("questions", [])
+    answers = payload.get("answers", [])
+
+    score = 0
+
+    for q, a in zip(questions, answers):
+        if q["answer"] == a:
+            score += 1
+
+    return {
+        "total": len(questions),
+        "score": score
     }
