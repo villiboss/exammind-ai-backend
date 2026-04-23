@@ -1,19 +1,18 @@
 from fastapi import APIRouter
 
+# =========================
+# IMPORT ALL ENDPOINTS
+# =========================
+from app.api.endpoints.auth import router as auth_router
+from app.api.endpoints.mcq import router as mcq_router
+
+# =========================
+# MAIN ROUTER
+# =========================
 router = APIRouter()
 
-from app.api.endpoints import auth
-from app.api.endpoints import leaderboard_v2
-from app.api.endpoints import ai_explain
-from app.api.endpoints import ai_mcq
-
-
-router.include_router(auth.router, prefix="/auth", tags=["Auth"])
-router.include_router(leaderboard_v2.router, prefix="/leaderboard", tags=["Leaderboard"])
-router.include_router(ai_explain.router, prefix="/ai", tags=["AI"])
-router.include_router(ai_mcq.router, prefix="/ai", tags=["AI"])
-
-
-@router.get("/health")
-def health():
-    return {"status": "ok"}
+# =========================
+# REGISTER ROUTES
+# =========================
+router.include_router(auth_router, prefix="/auth", tags=["Auth"])
+router.include_router(mcq_router, prefix="/ai", tags=["AI"])
