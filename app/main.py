@@ -1,5 +1,14 @@
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# ======================
+# CREATE APP FIRST
+# ======================
+app = FastAPI(title="ExamMind AI Backend")
+
+# ======================
+# CORS MIDDLEWARE
+# ======================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -11,3 +20,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ======================
+# ROUTES IMPORT
+# ======================
+from app.api.routes import router
+
+app.include_router(router)
+
+
+# ======================
+# TEST ROUTE
+# ======================
+@app.get("/")
+def home():
+    return {"message": "Backend running 🚀"}
